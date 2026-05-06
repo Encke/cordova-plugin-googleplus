@@ -323,13 +323,11 @@ public class GooglePlus extends CordovaPlugin {
             public void run() {
                 JSONObject result = new JSONObject();
                 try {
-                    Account googleAccount = getGoogleAccount(account);
-                    JSONObject accessTokenBundle = getAuthToken(
-                        cordova.getActivity(), googleAccount, true
-                    );
-                    result.put(FIELD_ACCESS_TOKEN, accessTokenBundle.get(FIELD_ACCESS_TOKEN));
-                    result.put(FIELD_TOKEN_EXPIRES, accessTokenBundle.get(FIELD_TOKEN_EXPIRES));
-                    result.put(FIELD_TOKEN_EXPIRES_IN, accessTokenBundle.get(FIELD_TOKEN_EXPIRES_IN));
+                    // Do not block the login callback on optional access-token
+                    // verification calls. The app authenticates with idToken.
+                    result.put(FIELD_ACCESS_TOKEN, JSONObject.NULL);
+                    result.put(FIELD_TOKEN_EXPIRES, JSONObject.NULL);
+                    result.put(FIELD_TOKEN_EXPIRES_IN, JSONObject.NULL);
                     result.put("email", account.getEmail());
                     result.put("idToken", account.getIdToken());
                     result.put("serverAuthCode", account.getServerAuthCode());

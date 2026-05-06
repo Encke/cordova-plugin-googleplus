@@ -36,6 +36,15 @@ You can also configure it to get an [idToken](#7-exchanging-the-idtoken) and [se
 
 This plugin only wraps access to the Google Sign-In API. Further API access should be implemented per use-case, per developer.
 
+### Fork updates (May 2026)
+
+This fork includes compatibility updates that are not present in the original upstream plugin:
+
+* iOS implementation migrated to modern GoogleSignIn 7.x APIs (`signInWithPresentingViewController`, `restorePreviousSignInWithCompletion`, `disconnectWithCompletion`).
+* iOS pod dependency is pinned in `plugin.xml` to `GoogleSignIn ~> 7.0`.
+* Android sign-in callback path is non-blocking and returns immediately with identity payload (`idToken`, `serverAuthCode`) without waiting on legacy `AccountManager` access-token verification.
+* On Android, `accessToken` may be `null`/empty for this flow by design; use `idToken` for backend identity verification.
+
 ## 2. Screenshots
 
 Android
@@ -159,6 +168,10 @@ For the latest version from Git (not recommended):
 
 This plugin use the [CocoaPods dependency manager](https://cocoapods.org) in order to satisfy the iOS Google SignIn SDK library dependencies.
 
+Current fork pod target:
+
+* `GoogleSignIn ~> 7.0`
+
 Therefore please make sure you have Cocoapods installed in your iOS build environment - setup instructions can be found [here](https://cocoapods.org/). Also make sure your local Cocoapods repo is up-to-date by running `pod repo update`.
 
 If building your project in Xcode, you need to open `YourProject.xcworkspace` (not `YourProject.xcodeproj`) so both your Cordova app project and the Pods project will be loaded into Xcode.
@@ -229,7 +242,7 @@ The success callback (second argument) gets a JSON object with the following con
  obj.imageUrl       // 'http://link-to-my-profilepic.google.com'
  obj.idToken        // idToken that can be exchanged to verify user identity.
  obj.serverAuthCode // Auth code that can be exchanged for an access token and refresh token for offline access
- obj.accessToken    // OAuth2 access token
+ obj.accessToken    // OAuth2 access token (Android may return null/empty in this fork; use idToken/serverAuthCode)
 ```
 
 Additional user information is available by use case. Add the scopes needed to the scopes option then return the info to the result object being created in the `handleSignInResult` and `didSignInForUser` functions on Android and iOS, respectively.
@@ -328,6 +341,12 @@ As stated before, this plugin is all about user authentication and identity, so 
 
 - Q: I'm getting **Error 10**, what do I do?
 - A: This is likely caused by cordova not using the keystore you want to use (e.g. because you generated your own). Please check https://cordova.apache.org/docs/en/latest/guide/platforms/android/#signing-an-app to read how to do this. Some have reported that you need to run `cordova clean` before running the build to resolve error 10.
+
+- Q: Android sign-in UI completes but JS callback times out or never fires.
+- A: If native logs show callback messages but JS does not receive them, verify your Cordova bridge mode and that the app is not navigating away from the initialized bridge context mid-flow.
+
+- Q: Android sign-in now returns callback error `code 10` instead of timing out.
+- A: This means callback delivery is working and OAuth config is mismatched. Verify package name and SHA-1 fingerprints (debug, release, and Play App Signing certificate when applicable) in Google Cloud/Firebase OAuth client settings.
 
 - Q: I'm getting **Error 16**, what do I do?
 - A: This is always a problem because the signature (or fingerprint) of your android app when signed is not added to the google console (or firebase) OAuth whitelist. Please double check if you did everything required for this. See the mini-guide below.
