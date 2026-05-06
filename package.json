@@ -25,11 +25,10 @@
     "Authentication",
     "ecosystem:cordova",
     "cordova-android",
-    "cordova-ios"
+    "android-only"
   ],
   "platforms": [
-    "android",
-    "ios"
+    "android"
   ],
   "dependencies": {
     "q": "*"

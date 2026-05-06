@@ -30,7 +30,7 @@
   <!-- android -->
   <platform name="android">
 
-  <preference name="PLAY_SERVICES_VERSION" default="21.0.0"/>
+    <preference name="PLAY_SERVICES_VERSION" default="21.0.0"/>
     <framework src="com.google.android.gms:play-services-auth:$PLAY_SERVICES_VERSION" />
 
     <config-file target="res/xml/config.xml" parent="/*">
@@ -42,71 +42,6 @@
     </config-file>
 
     <source-file src="src/android/GooglePlus.java" target-dir="src/nl/xservices/plugins"/>
-  </platform>
-
-  <!-- ios -->
-  <platform name="ios">
-
-    <config-file target="config.xml" parent="/*">
-      <feature name="GooglePlus">
-        <param name="ios-package" value="GooglePlus"/>
-        <param name="onload" value="true" />
-      </feature>
-      <access origin="https://accounts.google.com/*" />
-    </config-file>
-
-    <header-file src="src/ios/GooglePlus.h"/>
-    <source-file src="src/ios/GooglePlus.m"/>
-
-    <preference name="REVERSED_CLIENT_ID" />
-
-    <config-file target="*-Info.plist" parent="CFBundleURLTypes">
-      <array>
-        <dict>
-            <key>CFBundleTypeRole</key>
-            <string>Editor</string>
-            <key>CFBundleURLName</key>
-            <string>REVERSED_CLIENT_ID</string>
-            <key>CFBundleURLSchemes</key>
-            <array>
-                <string>$REVERSED_CLIENT_ID</string>
-            </array>
-        </dict>
-      </array>
-    </config-file>
-
-    <config-file parent="keychain-access-groups" target="*/Entitlements-Debug.plist">
-      <array>
-        <string>$(AppIdentifierPrefix)$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-      </array>
-    </config-file>
-    <config-file parent="keychain-access-groups" target="*/Entitlements-Release.plist">
-      <array>
-        <string>$(AppIdentifierPrefix)$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-      </array>
-    </config-file>
-
-    <!-- System frameworks -->
-    <framework src="AddressBook.framework" weak="true" />
-    <framework src="CoreText.framework" weak="true" />
-    <framework src="SafariServices.framework" weak="true" />
-    <framework src="Security.framework" weak="true" />
-    <framework src="SystemConfiguration.framework" weak="true" />
-    <framework src="libz.tbd" weak="true" />
-    <framework src="libz.dylib" weak="true" />
-
-    <!-- Google frameworks -->
-    <podspec>
-      <config>
-        <source url="https://cdn.cocoapods.org/"/>
-      </config>
-      <pods use-frameworks="true">
-        <pod name="GoogleSignIn" spec="~> 5.0.2"/>
-        <pod name="GoogleUtilities" spec="~> 7.2.2"/>
-      </pods>
-    </podspec>
-
-		<hook type="after_plugin_install" src="hooks/ios/prerequisites.js"/>
   </platform>
 
   <!-- browser -->
