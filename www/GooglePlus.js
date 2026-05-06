@@ -35,3 +35,4 @@ GooglePlus.install = function () {
 };
 
 cordova.addConstructor(GooglePlus.install);
+module.exports = new GooglePlus();
